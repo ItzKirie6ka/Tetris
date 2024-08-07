@@ -1,0 +1,27 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bfd6f9db1447f824d90830dd02f68125, type: 3}
+  m_Name: GameFieldGeneratorConfig
+  m_EditorClassIdentifier: 
+  cellPrefab: {fileID: 4343664326432250767, guid: b24638f15edae8a4289cb5bf195e348f, type: 3}
+  cellSize: {x: 1, y: 1}
+  borderColor: {r: 0.3490566, g: 0.33753115, b: 0.33753115, a: 1}
+  emptyColor: {r: 0, g: 0, b: 0, a: 0}
+  bricksColors:
+  - {r: 1, g: 0.9990904, b: 0.023584902, a: 0}
+  - {r: 0.02352941, g: 1, b: 0.02702061, a: 0}
+  - {r: 0.02352941, g: 0.12344347, b: 1, a: 0}
+  - {r: 0.6986286, g: 0.02352941, b: 1, a: 0}
+  - {r: 1, g: 0.06176264, b: 0.02352941, a: 0}
+  smallFieldSize: {x: 8, y: 8}
+  mediumFieldSize: {x: 16, y: 16}
+  largeFieldSize: {x: 32, y: 32}
