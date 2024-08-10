@@ -21,7 +21,7 @@ namespace Features.GameFieldFeature
             _spriteRenderer = GetComponent<SpriteRenderer>();
         }
 
-        public void SetType(CellType type,GameFieldGeneratorConfig config)
+        public void SetType(CellType type, GameFieldGeneratorConfig config)
         {
             Type = type;
             
@@ -30,6 +30,13 @@ namespace Features.GameFieldFeature
                 CellType.Border => config.BorderColor,
                 CellType.Empty => config.EmptyColor,
             };
+        }
+
+        public bool CheckCollision(Cell[] cells, Vector2Int fieldSize)
+        {
+            var cellPosition = transform.position;
+
+            return cells[((int)cellPosition.y * fieldSize.x - 1) + (int)cellPosition.x].Type is CellType.Border or CellType.Brick;
         }
 
         public CellType CheckType(Vector2 fieldSize) => IsBorder(fieldSize) ? CellType.Border : CellType.Empty;
@@ -42,7 +49,7 @@ namespace Features.GameFieldFeature
 
             var borderPosition = fieldSize / 2;
 
-            if (cellPosition.y == -borderPosition.y || cellPosition.y == borderPosition.y - 1) isBorder = true;
+            if (cellPosition.y == -borderPosition.y + 1 || cellPosition.y == borderPosition.y) isBorder = true;
 
             else if (cellPosition.x == -borderPosition.x || cellPosition.x == borderPosition.x - 1) isBorder = true;
 

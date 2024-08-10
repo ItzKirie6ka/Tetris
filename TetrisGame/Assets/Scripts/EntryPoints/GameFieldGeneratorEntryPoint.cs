@@ -1,3 +1,5 @@
+using Features.Aligment.GameFieldGeneratorFeature;
+using Features.GameFieldFeature;
 using Features.GameFieldGeneratorFeature;
 using PlayerPreferences;
 using ScriptableObjects;
@@ -20,9 +22,18 @@ namespace EntryPoints
 
             var fieldSize = gameFieldPrefs.GetFieldSize(config);
 
-            var gameFieldGenerator = new GameFieldGenerator(config, fieldSize, container);
+            var gameField = new GameField
+                (
+                new GameFieldGenerator(
+                    config,
+                    fieldSize, 
+                    container, 
+                    new GameFieldAligment()
+                ),
+                fieldSize
+                );
 
-            gameFieldGenerator.Generate();
+            gameField.Generate();
         }
     }
 }

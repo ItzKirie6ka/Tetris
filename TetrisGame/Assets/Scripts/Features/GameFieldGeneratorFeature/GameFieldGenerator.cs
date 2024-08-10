@@ -1,12 +1,12 @@
+using Features.Aligment.GameFieldGeneratorFeature;
+using Extensions;
 using Features.GameFieldFeature;
 using ScriptableObjects;
-using System.Runtime.CompilerServices;
 using UnityEngine;
-using UnityEngine.UIElements;
 
 namespace Features.GameFieldGeneratorFeature
 {
-    public class GameFieldGenerator
+    public class GameFieldGenerator : IGameFieldGenerator
     {
         private readonly GameFieldGeneratorConfig _config;
 
@@ -14,43 +14,61 @@ namespace Features.GameFieldGeneratorFeature
 
         private readonly Transform _container;
 
+        private readonly IGameFieldAligment aligment;
+        
 
-        public GameFieldGenerator(GameFieldGeneratorConfig config, Vector2Int fieldSize, Transform container)
+        public GameFieldGenerator(GameFieldGeneratorConfig config, Vector2Int fieldSize, Transform container, IGameFieldAligment aligment)
         {
             _config = config;
             _fieldSize = fieldSize;
             _container = container;
+            this.aligment = aligment;
         }
          
-        public void Generate()
+        public Cell[] Generate()
         {
-            var cells = new Cell[_fieldSize.x, _fieldSize.y];
+            var cells = new Cell[_fieldSize.x * _fieldSize.y];
 
-            for (var y = 0; y < _fieldSize.y; ++y)
-                for (var x = 0; x < _fieldSize.x; ++x)
-                    InitializeCell(ref cells[x, y], x, y);
+            InitializeGameField(cells);
 
-            //TODO separate aligment
+            aligment.Align
+                (
+                _container, 
+                cells,
+                _fieldSize,
+                _config.CellSize
+                );
 
-            _container.position += new Vector3(_config.CellSize.x / 2, _config.CellSize.y / 2, 0);
-
-            for (var y = 0; y < _fieldSize.y; ++y)
-                for (var x = 0; x < _fieldSize.x; ++x)
-                    cells[x, y].transform.position *= _config.CellSize;
+            return cells;
         }
 
-        private Vector2 GetAlignedPosition(Vector2 position)
+        private void InitializeGameField(Cell[] cells)
         {
-            return new Vector2(position.y - _fieldSize.y / 2, position.x - _fieldSize.x / 2);
+            var cellPosition = new Vector2Int(0, 0);
+
+            for (var i = 0; i < cells.Length; ++i)
+            {
+                if (cellPosition.x % _fieldSize.x == 0)
+                {
+                    cellPosition.x = 0;
+                    ++cellPosition.y;
+                }
+
+                Debug.Log($"x={cellPosition.x}, y={cellPosition.y}");
+
+                InitializeCell(ref cells[i], cellPosition);
+
+                ++cellPosition.x;
+            }       
         }
 
-        private void InitializeCell(ref Cell cell, int y, int x)
+        private void InitializeCell(ref Cell cell, Vector2 position)
         {
             var cellGameObject = Object.Instantiate(_config.CellPrefab, _container);
 
             cellGameObject.transform.localScale = new Vector2(_config.CellSize.x, _config.CellSize.y);
 
-            cellGameObject.transform.position = GetAlignedPosition(new Vector2(x, y));
+            cellGameObject.transform.position = position.AlignedPosition(_fieldSize);
 
             cell = cellGameObject.AddComponent<Cell>();
 
